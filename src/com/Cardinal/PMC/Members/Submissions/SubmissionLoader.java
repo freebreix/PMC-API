@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -559,10 +558,8 @@ public class SubmissionLoader {
 	 * @return the thread author.
 	 */
 	private User getAuthor(Document doc) {
-		Element miniInfo = doc.getElementsByClass(ElementIdentifiers.MINIINFO).first();
-		Elements loc = miniInfo.getElementsByTag("a");
-		Element link = loc.first();
-		return new User(link.absUrl("href"));
+		Element author = doc.getElementsByClass(ElementIdentifiers.MINIINFO).first().getElementsByTag("a").first();
+		return new User(author.absUrl("href"), author.attr("title"));
 	}
 
 	/**
@@ -596,11 +593,11 @@ public class SubmissionLoader {
 			Elements imgs = doc.getElementsByClass(ElementIdentifiers.RESOURCE_IMG);
 			if (!imgs.isEmpty()) {
 				String[] thumbnails = imgs.stream().map(e -> e.attr("src")).toArray(String[]::new);
-				Elements vids = doc.getElementsByClass(ElementIdentifiers.RESOURCE_NO_DRAG);
+				/*Elements vids = doc.getElementsByClass(ElementIdentifiers.RESOURCE_NO_DRAG);
 				if (!vids.isEmpty()) {
 					String[] videos = vids.stream().map(e -> e.attr("data-rsVideo")).toArray(String[]::new);
 					return Stream.of(thumbnails, videos).distinct().toArray(String[]::new);
-				}
+				}*/
 				return thumbnails;
 			}
 			Element gallery = doc.getElementById(ElementIdentifiers.VIDEO_GALLERY);
@@ -663,17 +660,17 @@ public class SubmissionLoader {
 	 */
 	private Object[] getDetails(Document doc) {
 		Element resourceInfo = doc.getElementById(ElementIdentifiers.DETAILS);
+		Element resourceOptions = doc.getElementById(ElementIdentifiers.RES_OPTIONS);
+		
 		Element data = resourceInfo.getElementsByClass(ElementIdentifiers.DATEDIV).first();
-
 		LocalDateTime time = parseDateTime(data.getElementsByTag(ElementIdentifiers.DATETIME).first().attr("title"));
 
-		Elements details = resourceInfo.getElementsByClass(ElementIdentifiers.DETAILSBOX).first()
-				.getElementsByTag("span");
-
-		int diamonds = Integer.parseInt(details.first().ownText());
-		int views = Integer.parseInt(details.get(1).ownText().replaceAll(",", ""));
-		int viewsToday = Integer.parseInt(details.get(2).ownText());
-		int favorites = Integer.parseInt(details.get(4).ownText());
+		Elements details = resourceInfo.getElementsByClass(ElementIdentifiers.DETAILSBOX).first().getElementsByTag("span");
+		int views = Integer.parseInt(details.first().ownText().replaceAll(",", ""));
+		int viewsToday = Integer.parseInt(details.get(1).ownText());
+		
+		int diamonds = Integer.parseInt(resourceOptions.getElementsByClass(ElementIdentifiers.VOTES).first().ownText());
+		int favorites = Integer.parseInt(resourceOptions.getElementsByClass(ElementIdentifiers.FAVS).first().ownText());
 
 		return new Object[] { diamonds, views, viewsToday, favorites, time };
 	}
@@ -784,7 +781,7 @@ public class SubmissionLoader {
 	 */
 	private String getType(Document doc) {
 		Elements category = doc.getElementsByClass(ElementIdentifiers.TYPE);
-		return category.get(0).getElementsByTag("a").get(1).ownText();
+		return category.get(0).getElementsByTag("a").get(0).ownText().split(" ")[1];
 	}
 
 	/**

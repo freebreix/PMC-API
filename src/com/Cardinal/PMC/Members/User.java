@@ -80,6 +80,11 @@ public class User {
 	public User(String url) {
 		this.url = url;
 	}
+	
+	public User(String url, String name) {
+		this.url = url;
+		this.name = name;
+	}
 
 	/**
 	 * Gets a list of submissions by this user.

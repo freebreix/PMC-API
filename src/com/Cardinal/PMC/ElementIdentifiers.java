@@ -28,7 +28,8 @@ public class ElementIdentifiers {
 			TAGS = "item_tags", SERVERIP = "server_form", RESOURCE = "resource ", RINFO = "r-info",
 			AUTHOR = "contributed", RESOURCE_EMBED = "resource-embed", EMBED_CODE = "embed_code2",
 			RESOURCE_IMG = "rsImg", RESOURCE_NO_DRAG = "rsImg rsNoDrag", VIDEO_GALLERY = "tab_video_gallery",
-			ANGELS = "skin_angles", THIRD_PARTY = "third-party-download";
+			ANGELS = "skin_angles", THIRD_PARTY = "third-party-download",
+			VOTES = "c-num-votes stat txtlrg", FAVS = "c-num-favs stat txtlrg", RES_OPTIONS = "resource-options"; // new ones
 
 	// Wall Strings
 

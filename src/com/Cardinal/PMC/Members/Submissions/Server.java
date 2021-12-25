@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import com.Cardinal.PMC.Members.User;
 import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
+import com.google.gson.annotations.Expose;
 
 /**
  * A class used to represent a server submission.
@@ -20,7 +21,7 @@ import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
  */
 public class Server extends Submission {
 
-	private String ip;
+	@Expose private String ip;
 
 	/**
 	 * Constructs a new {@link Server} with the given data.

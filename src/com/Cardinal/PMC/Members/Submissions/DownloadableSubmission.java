@@ -3,6 +3,7 @@ package com.Cardinal.PMC.Members.Submissions;
 import java.io.IOException;
 
 import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
+import com.google.gson.annotations.Expose;
 
 /**
  * A class used to represent downloadable submissions (e.i. {@linkplain Mod},
@@ -13,8 +14,8 @@ import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
  */
 public class DownloadableSubmission extends Submission {
 
-	protected String downloadUrl;
-	protected String mirrorDownloads[];
+	@Expose protected String downloadUrl;
+	@Expose protected String mirrorDownloads[];
 
 	public DownloadableSubmission(String url) {
 		super(url);

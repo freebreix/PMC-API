@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import com.Cardinal.PMC.Members.User;
 import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
+import com.google.gson.annotations.Expose;
 
 /**
  * A class used to represent a submission.
@@ -21,14 +22,15 @@ import com.Cardinal.PMC.lang.UnloadedResourceExcpetion;
 public class Submission {
 
 	protected static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
-	protected String url, title, tags[];
+	@Expose protected String url, title;
+	protected String tags[];
 	protected Element description;
 	protected User author;
-	protected int diamonds = -1, views = -1, viewsToday = -1, favorites = -1, ID = -1;
+	@Expose protected int diamonds = -1, views = -1, viewsToday = -1, favorites = -1, ID = -1;
 	protected List<Comment> comments;
-	protected LocalDateTime timestamp;
+	@Expose protected LocalDateTime timestamp;
 	protected Type type;
-	protected String[] media;
+	@Expose protected String[] media;
 
 	/**
 	 * Constructs a new (unloaded) submission with the given URL.
