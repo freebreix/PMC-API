@@ -48,7 +48,7 @@ public class SubmissionLoader {
 		if (type.equals(Submission.Type.BLOGS))
 			throw new IllegalArgumentException("SubmissionLoader#getType cannot be used to get blogs!");
 
-		String url = "https://www.planetminecraft.com/resources/" + type.toString() + feedType.toString() + "&keywords=" + search;
+		String url = "https://www.planetminecraft.com/" + type.toString() + feedType.toString() + "&keywords=" + search;
 		Document doc = Jsoup.connect(url + "&p=" + startPage).userAgent("PMCAPI").post();
 
 		List<Submission> submissions = new ArrayList<Submission>();
@@ -400,7 +400,7 @@ public class SubmissionLoader {
 		try {
 			String type = getType(doc);
 			switch (type) {
-			case "Projects": {
+			case "Maps": {
 				User author = getAuthor(doc);
 				List<Comment> comments = getComments(doc);
 				String title = getTitle(doc);
@@ -494,7 +494,7 @@ public class SubmissionLoader {
 				loadedSubmissions.put(url, server);
 				return server;
 			}
-			case "Mods", "Maps": {
+			case "Mods": {
 				User author = getAuthor(doc);
 				List<Comment> comments = getComments(doc);
 				String title = getTitle(doc);
@@ -827,7 +827,7 @@ public class SubmissionLoader {
 	 */
 	private String getType(Document doc) {
 		Elements category = doc.getElementsByClass(ElementIdentifiers.TYPE);
-		return category.get(0).getElementsByTag("a").get(0).ownText().split(" ")[1];
+		return category.get(0).getElementsByTag("a").get(0).ownText().replaceFirst("Minecraft ", "");
 	}
 
 	/**
@@ -849,9 +849,5 @@ public class SubmissionLoader {
 		int minute = Integer.parseInt(time[1]);
 
 		return LocalDateTime.of(year, month, day, hour, minute);
-	}
-
-	public static void main(String[] args) throws IOException {
-
 	}
 }

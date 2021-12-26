@@ -247,7 +247,7 @@ public class Submission {
 	 *
 	 */
 	public enum Type {
-		PROJECTS, SKINS, PACKS, SERVERS, MODS, MAPS, BLOGS;
+		PROJECTS, SKINS, PACKS, SERVERS, MODS, BLOGS;
 
 		@Override
 		public String toString() {
@@ -262,12 +262,12 @@ public class Submission {
 	 *
 	 */
 	public enum Feed {
-		RELEVANT, TRENDING, UPDATED, NEW, BEST, VIEWS, DOWNLOADS;
+		RELEVANCY, TRENDING, UPDATED, NEW, BEST, VIEWS, DOWNLOADS;
 
 		@Override
 		public String toString() {
 			switch (this) {
-			case RELEVANT:
+			case RELEVANCY:
 				return "";
 			case TRENDING:
 				return "?order=order_hot";
