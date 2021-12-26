@@ -420,7 +420,7 @@ public class SubmissionLoader {
 
 				Project project = new Project(url, title, media, download, mirrors, desc, tags, author,
 						(int) details[0], (int) details[1], (int) details[2], (int) details[3], id, comments,
-						(String) details[4], (String) details[7]);
+						(String) details[4], (int) details[5], (int) details[6], (String) details[7]);
 
 				loadedSubmissions.put(url, project);
 				return project;

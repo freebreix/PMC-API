@@ -36,9 +36,8 @@ public class Mod extends DownloadableSubmission {
 	 * @param updated       the mod's submission date.
 	 */
 	public Mod(String url, String title, String[] media, String downloadurl, String[] mirrorDownloads,
-			Element description, String[] tags, User author, int diamonds, int views, int viewsToday,
-			int favorites, int iD, List<Comment> comments, String updated,
-			int downloads, int downloadsToday, String published) {
+			Element description, String[] tags, User author, int diamonds, int views, int viewsToday, int favorites,
+			int iD, List<Comment> comments, String updated, int downloads, int downloadsToday, String published) {
 		super(url);
 		this.type = Type.MODS;
 		this.url = url;

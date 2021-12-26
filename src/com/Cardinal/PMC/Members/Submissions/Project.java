@@ -37,7 +37,7 @@ public class Project extends DownloadableSubmission {
 	 */
 	public Project(String url, String title, String[] media, String downloadurl, String[] mirrorDownloads,
 			Element description, String[] tags, User author, int diamonds, int views, int viewsToday, int favorites,
-			int iD, List<Comment> comments, String updated, String published) {
+			int iD, List<Comment> comments, String updated, int downloads, int downloadsToday, String published) {
 		super(url);
 		this.type = Type.PROJECTS;
 		this.media = media;
@@ -56,6 +56,8 @@ public class Project extends DownloadableSubmission {
 		this.comments = comments;
 		this.updated = updated;
 		this.published = published;
+		this.downloads = downloads;
+		this.downloadsToday = downloadsToday;
 	}
 
 	@Override
