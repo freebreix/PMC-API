@@ -1,6 +1,5 @@
 package com.Cardinal.PMC.Members.Submissions;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,11 +33,12 @@ public class Mod extends DownloadableSubmission {
 	 * @param favorites       the mod's favorites.
 	 * @param iD              the mod's ID.
 	 * @param comments        the mod's comments.
-	 * @param timestamp       the mod's submission date.
+	 * @param updated       the mod's submission date.
 	 */
 	public Mod(String url, String title, String[] media, String downloadurl, String[] mirrorDownloads,
-			Element description, String[] tags, User author, int diamonds, int views, int viewsToday, int favorites,
-			int iD, List<Comment> comments, LocalDateTime timestamp) {
+			Element description, String[] tags, User author, int diamonds, int views, int viewsToday,
+			int favorites, int iD, List<Comment> comments, String updated,
+			int downloads, int downloadsToday, String published) {
 		super(url);
 		this.type = Type.MODS;
 		this.url = url;
@@ -55,14 +55,17 @@ public class Mod extends DownloadableSubmission {
 		this.favorites = favorites;
 		ID = iD;
 		this.comments = comments;
-		this.timestamp = timestamp;
+		this.updated = updated;
+		this.published = published;
+		this.downloads = downloads;
+		this.downloadsToday = downloadsToday;
 	}
 
 	@Override
 	public String toString() {
 		return "ID: " + ID + "\nType: Mod\nURL: " + url + "\nMedia: "
 				+ Arrays.toString(media != null ? media : new String[1]) + "\nTitle: " + title + "\nAuthor: " + author
-				+ "\nTime: " + timestamp.format(FORMATTER) + "\nDiamonds: " + diamonds + "\nViews: " + views + " | "
+				+ "\nTime: " + updated + "\nDiamonds: " + diamonds + "\nViews: " + views + " | "
 				+ viewsToday + " today\nFavorites: " + favorites + "\nDownload: " + downloadUrl + "\nDownload Mirrors:"
 				+ Arrays.toString(mirrorDownloads != null ? mirrorDownloads : new String[1]) + "\nTags: "
 				+ Arrays.toString(tags) + "\nDesc: [\n\t" + description.text().replaceAll("\n", "\n\t")

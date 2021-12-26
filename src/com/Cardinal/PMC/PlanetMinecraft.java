@@ -1,12 +1,12 @@
 package com.Cardinal.PMC;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.Cardinal.PMC.Forums.ThreadLoader;
 import com.Cardinal.PMC.Members.MemberManager;
 import com.Cardinal.PMC.Members.Submissions.Submission;
 import com.Cardinal.PMC.Members.Submissions.SubmissionLoader;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -19,16 +19,15 @@ import com.google.gson.GsonBuilder;
 public class PlanetMinecraft {
 
 	public static void main(String[] args) throws IOException {
-		if (args.length >= 4 && args[0].startsWith("searchSubmissions")) {
-			PlanetMinecraft pmc = new PlanetMinecraft();
-			var submissions = new ArrayList<Submission>();
-			if (args[0].endsWith("Feed"))
-				for (Submission subm : pmc.getSubmissions().searchSubmissionsFeed(args[1], Submission.Type.valueOf(args[2]), Submission.Feed.valueOf(args[3]), Integer.parseInt(args[4])))
-					submissions.add(pmc.getSubmissions().load(subm));
-			else for (Submission subm : pmc.getSubmissions().searchSubmissions(args[1], Submission.Type.valueOf(args[2]), Integer.parseInt(args[3])))
-					 submissions.add(pmc.getSubmissions().load(subm));
-			System.out.println(new GsonBuilder().registerTypeHierarchyAdapter(Submission.class, new SubmissionSerializer()).create().toJson(submissions));
-		}
+		PlanetMinecraft pmc = new PlanetMinecraft();
+		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Submission.class, new SubmissionSerializer()).create();
+		if (args.length == 6 && args[0].equals("searchSubmissions")) {
+			for (Submission subm : pmc.getSubmissions().searchSubmissionsFeedPages(args[1], Submission.Type.valueOf(args[2]), Submission.Feed.valueOf(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5])))
+				System.out.println(gson.toJson(pmc.getSubmissions().load(subm)));
+		} else if (args.length == 5 && args[0].equals("getFeedTypePages")) {
+			for (Submission subm : pmc.getSubmissions().getFeedTypePages(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Submission.Type.valueOf(args[3]), Submission.Feed.valueOf(args[4])))
+				System.out.println(gson.toJson(pmc.getSubmissions().load(subm)));
+		} else System.err.println("No command executed");
 	}
 
 	static {

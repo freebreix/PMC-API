@@ -41,7 +41,7 @@ public class WallPost {
 	 *            the post's URL.
 	 * @param likes
 	 *            the post's likes.
-	 * @param timestamp
+	 * @param updated
 	 *            the post's timestamp.
 	 * @param comments
 	 *            the post's comments.

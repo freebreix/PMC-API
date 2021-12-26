@@ -1,7 +1,6 @@
 package com.Cardinal.PMC.Members.Submissions;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +25,10 @@ public class Submission {
 	protected String tags[];
 	protected Element description;
 	protected User author;
-	@Expose protected int diamonds = -1, views = -1, viewsToday = -1, favorites = -1, ID = -1;
+	protected int diamonds = -1, favorites = -1, ID = -1;
+	@Expose protected int views = -1, viewsToday = -1;
 	protected List<Comment> comments;
-	@Expose protected LocalDateTime timestamp;
+	@Expose protected String updated, published;
 	protected Type type;
 	@Expose protected String[] media;
 
@@ -165,10 +165,10 @@ public class Submission {
 	 * 
 	 * @return the timestamp.
 	 */
-	public LocalDateTime getTimestamp() {
-		if (timestamp == null)
+	public String getTimestamp() {
+		if (updated == null)
 			throw new UnloadedResourceExcpetion(url, "submissionDate");
-		return timestamp;
+		return updated;
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class Submission {
 		this.favorites = sub.getFavorites();
 		this.ID = sub.getID();
 		this.tags = sub.getTags();
-		this.timestamp = sub.getTimestamp();
+		this.updated = sub.getTimestamp();
 		this.title = sub.getTitle();
 		this.views = sub.getViews();
 		this.viewsToday = sub.getViewsToday();
@@ -229,7 +229,7 @@ public class Submission {
 		try {
 			return "ID: " + ID + "\nType: " + type.toString().toUpperCase() + "\nURL: " + url + "\nMedia: "
 					+ Arrays.toString(media != null ? media : new String[1]) + "\nTitle: " + title + "\nAuthor: "
-					+ author + "\nTime: " + timestamp.format(FORMATTER) + "\nDiamonds: " + diamonds + "\nViews: "
+					+ author + "\nTime: " + updated + "\nDiamonds: " + diamonds + "\nViews: "
 					+ views + " | " + viewsToday + " today\nFavorites: " + favorites + "\nTags: "
 					+ Arrays.toString(tags) + "\nDesc: [\n\t" + description.text().replaceAll("\n", "\n\t")
 					+ "\n]\nComments: {\n\t" + comments.stream().map(c -> c.toString())
@@ -247,7 +247,7 @@ public class Submission {
 	 *
 	 */
 	public enum Type {
-		PROJECTS, SKINS, PACKS, SERVERS, MODS, BLOGS;
+		PROJECTS, SKINS, PACKS, SERVERS, MODS, MAPS, BLOGS;
 
 		@Override
 		public String toString() {
@@ -262,11 +262,13 @@ public class Submission {
 	 *
 	 */
 	public enum Feed {
-		TRENDING, UPDATED, NEW, BEST, VIEWS, DOWNLOADS;
+		RELEVANT, TRENDING, UPDATED, NEW, BEST, VIEWS, DOWNLOADS;
 
 		@Override
 		public String toString() {
 			switch (this) {
+			case RELEVANT:
+				return "";
 			case TRENDING:
 				return "?order=order_hot";
 			case UPDATED:

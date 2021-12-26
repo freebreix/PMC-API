@@ -27,6 +27,40 @@ public class SubmissionLoader {
 	 */
 	private HashMap<String, Submission> loadedSubmissions = new HashMap<String, Submission>();
 	private Set<String> ignoredUsers = new HashSet<String>();
+	
+	/**
+	 * Searches under the specified type of submission for the given keywords as
+	 * defined by the given feed and gets the pages in the range defined.
+	 * 
+	 * @author freebreix
+	 * 
+	 * @param search   search keywords.
+	 * @param type     the type of submission to search.
+	 * @param feedType used to sort the blogs.
+	 * @param amount   the amount of submissions to get.
+	 * @param startPage the start page.
+	 * @param endPage   the end page.
+	 * @return the unloaded submissions.
+	 * @throws IOException there was an error getting the submissions.
+	 */
+	public List<Submission> searchSubmissionsFeedPages(String search, Type type, Feed feedType, int startPage, int endPage)
+			throws IOException {
+		if (type.equals(Submission.Type.BLOGS))
+			throw new IllegalArgumentException("SubmissionLoader#getType cannot be used to get blogs!");
+
+		String url = "https://www.planetminecraft.com/resources/" + type.toString() + feedType.toString() + "&keywords=" + search;
+		Document doc = Jsoup.connect(url + "&p=" + startPage).userAgent("PMCAPI").post();
+
+		List<Submission> submissions = new ArrayList<Submission>();
+		int p = startPage;
+		while (p <= endPage) {
+			p++;
+			submissions.addAll(getSubmissionPage(doc, Integer.MAX_VALUE));
+			doc = Jsoup.connect(url + "&p=" + p).userAgent("PMCAPI").post();
+		}
+
+		return submissions;
+	}
 
 	/**
 	 * Searches under the specified type of submission for the given keywords as
@@ -41,8 +75,7 @@ public class SubmissionLoader {
 	 */
 	public List<Submission> searchSubmissionsFeed(String search, Type type, Feed feedType, int amount)
 			throws IOException {
-		String url = "https://www.planetminecraft.com/resources/" + type.toString() + feedType.toString() + "&keywords="
-				+ search;
+		String url = "https://www.planetminecraft.com/resources/" + type.toString() + feedType.toString() + "&keywords=" + search;
 		Document doc = Jsoup.connect(url).userAgent("PMCAPI").post();
 
 		List<Submission> submissions = new ArrayList<Submission>();
@@ -387,7 +420,7 @@ public class SubmissionLoader {
 
 				Project project = new Project(url, title, media, download, mirrors, desc, tags, author,
 						(int) details[0], (int) details[1], (int) details[2], (int) details[3], id, comments,
-						(LocalDateTime) details[4]);
+						(String) details[4], (String) details[7]);
 
 				loadedSubmissions.put(url, project);
 				return project;
@@ -411,7 +444,8 @@ public class SubmissionLoader {
 				Element desc = getDescription(doc);
 
 				Skin skin = new Skin(url, title, media, download, mirrors, desc, tags, author, (int) details[0],
-						(int) details[1], (int) details[2], (int) details[3], id, comments, (LocalDateTime) details[4]);
+						(int) details[1], (int) details[2], (int) details[3], id, comments, (String) details[4],
+						(int) details[5], (int) details[6], (String) details[7]);
 
 				loadedSubmissions.put(url, skin);
 				return skin;
@@ -436,7 +470,7 @@ public class SubmissionLoader {
 
 				TexturePack pack = new TexturePack(url, title, media, download, mirrors, desc, tags, author,
 						(int) details[0], (int) details[1], (int) details[2], (int) details[3], id, comments,
-						(LocalDateTime) details[4]);
+						(String) details[4], (int) details[5], (int) details[6], (String) details[7]);
 				loadedSubmissions.put(url, pack);
 				return pack;
 			}
@@ -455,12 +489,12 @@ public class SubmissionLoader {
 				String ip = getServerIP(doc);
 
 				Server server = new Server(url, title, ip, media, desc, tags, author, (int) details[0],
-						(int) details[1], (int) details[2], (int) details[3], id, comments, (LocalDateTime) details[4]);
+						(int) details[1], (int) details[2], (int) details[3], id, comments, (String) details[4], (String) details[7]);
 
 				loadedSubmissions.put(url, server);
 				return server;
 			}
-			case "Mods": {
+			case "Mods", "Maps": {
 				User author = getAuthor(doc);
 				List<Comment> comments = getComments(doc);
 				String title = getTitle(doc);
@@ -479,7 +513,8 @@ public class SubmissionLoader {
 				Element desc = getDescription(doc);
 
 				Mod mod = new Mod(url, title, media, download, mirrors, desc, tags, author, (int) details[0],
-						(int) details[1], (int) details[2], (int) details[3], id, comments, (LocalDateTime) details[4]);
+						(int) details[1], (int) details[2], (int) details[3], id, comments, (String) details[4],
+						(int) details[5], (int) details[6], (String) details[7]);
 
 				loadedSubmissions.put(url, mod);
 				return mod;
@@ -497,7 +532,7 @@ public class SubmissionLoader {
 				Element desc = getDescription(doc);
 
 				Blog blog = new Blog(url, title, media, desc, tags, author, (int) details[0], (int) details[1],
-						(int) details[2], (int) details[3], id, comments, (LocalDateTime) details[4]);
+						(int) details[2], (int) details[3], id, comments, (String) details[4], (String) details[7]);
 
 				loadedSubmissions.put(url, blog);
 				return blog;
@@ -662,17 +697,26 @@ public class SubmissionLoader {
 		Element resourceInfo = doc.getElementById(ElementIdentifiers.DETAILS);
 		Element resourceOptions = doc.getElementById(ElementIdentifiers.RES_OPTIONS);
 		
-		Element data = resourceInfo.getElementsByClass(ElementIdentifiers.DATEDIV).first();
-		LocalDateTime time = parseDateTime(data.getElementsByTag(ElementIdentifiers.DATETIME).first().attr("title"));
+		Elements time = resourceInfo.getElementsByClass(ElementIdentifiers.DATEDIV).first().getElementsByTag(ElementIdentifiers.DATETIME);
+		String published = time.first().attr("title"), updated = null;
+		if (time.size() > 1)
+			updated = time.get(1).attr("title");
 
-		Elements details = resourceInfo.getElementsByClass(ElementIdentifiers.DETAILSBOX).first().getElementsByTag("span");
-		int views = Integer.parseInt(details.first().ownText().replaceAll(",", ""));
-		int viewsToday = Integer.parseInt(details.get(1).ownText());
+		Elements stats = resourceInfo.getElementsByClass(ElementIdentifiers.DETAILSBOX).first().getElementsByTag("span");
+		
+		int views = Integer.parseInt(stats.get(0).ownText().replaceAll(",", ""));
+		int viewsToday = Integer.parseInt(stats.get(1).ownText());
+		
+		int downloads = 0, downloadsToday = 0;
+		if (stats.size() > 2) {
+			downloads = Integer.parseInt(stats.get(2).ownText().replaceAll(",", ""));
+			downloadsToday = Integer.parseInt(stats.get(3).ownText());
+		}
 		
 		int diamonds = Integer.parseInt(resourceOptions.getElementsByClass(ElementIdentifiers.VOTES).first().ownText());
 		int favorites = Integer.parseInt(resourceOptions.getElementsByClass(ElementIdentifiers.FAVS).first().ownText());
 
-		return new Object[] { diamonds, views, viewsToday, favorites, time };
+		return new Object[] { diamonds, views, viewsToday, favorites, updated, downloads, downloadsToday, published };
 	}
 
 	/**
@@ -755,6 +799,8 @@ public class SubmissionLoader {
 	 */
 	private String[] getTags(Document doc) {
 		Element tags = doc.getElementById(ElementIdentifiers.TAGS);
+		if (tags == null)
+			return null;
 		Elements names = tags.getElementsByTag("a");
 		String[] strTags = new String[names.size()];
 		for (int i = 0; i < names.size(); i++) {

@@ -16,6 +16,7 @@ public class DownloadableSubmission extends Submission {
 
 	@Expose protected String downloadUrl;
 	@Expose protected String mirrorDownloads[];
+	@Expose protected int downloads = -1, downloadsToday = -1;
 
 	public DownloadableSubmission(String url) {
 		super(url);

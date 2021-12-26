@@ -1,7 +1,5 @@
 package com.Cardinal.PMC.Members.Submissions;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,11 +33,11 @@ public class Project extends DownloadableSubmission {
 	 * @param favorites       the project's favorites.
 	 * @param iD              the project's ID.
 	 * @param comments        the project's comments.
-	 * @param timestamp       the project's submission date.
+	 * @param updated       the project's submission date.
 	 */
 	public Project(String url, String title, String[] media, String downloadurl, String[] mirrorDownloads,
 			Element description, String[] tags, User author, int diamonds, int views, int viewsToday, int favorites,
-			int iD, List<Comment> comments, LocalDateTime timestamp) {
+			int iD, List<Comment> comments, String updated, String published) {
 		super(url);
 		this.type = Type.PROJECTS;
 		this.media = media;
@@ -56,14 +54,15 @@ public class Project extends DownloadableSubmission {
 		this.favorites = favorites;
 		ID = iD;
 		this.comments = comments;
-		this.timestamp = timestamp;
+		this.updated = updated;
+		this.published = published;
 	}
 
 	@Override
 	public String toString() {
 		return "ID: " + ID + "\nType: Project\nURL: " + url + "\nMedia: "
 				+ Arrays.toString(media != null ? media : new String[1]) + "\nTitle: " + title + "\nAuthor: " + author
-				+ "\nTime: " + timestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")) + "\nDiamonds: "
+				+ "\nTime: " + updated + "\nDiamonds: "
 				+ diamonds + "\nViews: " + views + " | " + viewsToday + " today\nFavorites: " + favorites
 				+ "\nDownload: " + downloadUrl + "\nDownload Mirrors:"
 				+ Arrays.toString(mirrorDownloads != null ? mirrorDownloads : new String[1]) + "\nTags: "

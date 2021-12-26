@@ -1,6 +1,5 @@
 package com.Cardinal.PMC.Members.Submissions;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
@@ -30,10 +29,10 @@ public class Blog extends Submission {
 	 * @param favorites   the blog's favorites.
 	 * @param iD          the block's ID.
 	 * @param comments    the block's comments.
-	 * @param timestamp   the block's submission date.
+	 * @param updated   the block's submission date.
 	 */
 	public Blog(String url, String title, String[] media, Element description, String[] tags, User author, int diamonds,
-			int views, int viewsToday, int favorites, int iD, List<Comment> comments, LocalDateTime timestamp) {
+			int views, int viewsToday, int favorites, int iD, List<Comment> comments, String updated, String released) {
 		super(url);
 		this.type = Type.BLOGS;
 		this.title = title;
@@ -47,7 +46,8 @@ public class Blog extends Submission {
 		this.favorites = favorites;
 		ID = iD;
 		this.comments = comments;
-		this.timestamp = timestamp;
+		this.updated = updated;
+		this.published = released;
 	}
 
 	public enum Category {

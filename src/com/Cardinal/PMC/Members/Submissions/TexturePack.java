@@ -1,7 +1,5 @@
 package com.Cardinal.PMC.Members.Submissions;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,11 +33,11 @@ public class TexturePack extends DownloadableSubmission {
 	 * @param favorites       the pack's favorites.
 	 * @param iD              the pack's ID.
 	 * @param comments        the pack's comments.
-	 * @param timestamp       the pack's submission date.
+	 * @param updated       the pack's submission date.
 	 */
 	public TexturePack(String url, String title, String[] media, String downloadurl, String[] mirrorDownloads,
 			Element description, String[] tags, User author, int diamonds, int views, int viewsToday, int favorites,
-			int iD, List<Comment> comments, LocalDateTime timestamp) {
+			int iD, List<Comment> comments, String updated, int downloads, int downloadsToday, String released) {
 		super(url);
 		this.url = url;
 		this.title = title;
@@ -55,15 +53,18 @@ public class TexturePack extends DownloadableSubmission {
 		this.favorites = favorites;
 		ID = iD;
 		this.comments = comments;
-		this.timestamp = timestamp;
+		this.updated = updated;
+		this.published = released;
 		this.type = Type.PACKS;
+		this.downloads = downloads;
+		this.downloadsToday = downloadsToday;
 	}
 
 	@Override
 	public String toString() {
 		return "ID: " + ID + "\nType: Resource Pack\nURL: " + url + "\nMedia: "
 				+ Arrays.toString(media != null ? media : new String[1]) + "\nTitle: " + title + "\nAuthor: " + author
-				+ "\nTime: " + timestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")) + "\nDiamonds: "
+				+ "\nTime: " + updated + "\nDiamonds: "
 				+ diamonds + "\nViews: " + views + " | " + viewsToday + " today\nFavorites: " + favorites
 				+ "\nDownload: " + downloadUrl + "\nDownload Mirrors:"
 				+ Arrays.toString(mirrorDownloads != null ? mirrorDownloads : new String[1]) + "\nTags: "

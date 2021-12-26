@@ -1,8 +1,6 @@
 package com.Cardinal.PMC.Members.Submissions;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,11 +37,10 @@ public class Server extends Submission {
 	 * @param favorites   the server's favorites.
 	 * @param iD          the server's ID.
 	 * @param comments    the server's comments.
-	 * @param timestamp   the server's submission date.
+	 * @param updated   the server's submission date.
 	 */
 	public Server(String url, String title, String IP, String[] media, Element description, String[] tags, User author,
-			int diamonds, int views, int viewsToday, int favorites, int iD, List<Comment> comments,
-			LocalDateTime timestamp) {
+			int diamonds, int views, int viewsToday, int favorites, int iD, List<Comment> comments, String updated, String published) {
 		super(url);
 		this.url = url;
 		this.title = title;
@@ -58,7 +55,8 @@ public class Server extends Submission {
 		this.ID = iD;
 		this.ip = IP;
 		this.comments = comments;
-		this.timestamp = timestamp;
+		this.updated = updated;
+		this.published = published;
 		this.type = Type.SERVERS;
 	}
 
@@ -85,7 +83,7 @@ public class Server extends Submission {
 		return "ID: " + ID + "\nType: Server\nURL: " + url + "\nMedia: "
 				+ Arrays.toString(media != null ? media : new String[1]) + "\nTitle: " + title + "\nIP: " + ip
 				+ "\nAuthor: " + author + "\nTime: "
-				+ timestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")) + "\nDiamonds: " + diamonds
+				+ updated + "\nDiamonds: " + diamonds
 				+ "\nViews: " + views + " | " + viewsToday + " today\nFavorites: " + favorites + "\nTags: "
 				+ Arrays.toString(tags) + "\nDesc: [\n\t" + description.text().replaceAll("\n", "\n\t")
 				+ "\n]\nComments: {\n\t"
